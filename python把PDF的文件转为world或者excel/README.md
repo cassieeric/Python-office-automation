@@ -1,0 +1,2 @@
+# Introduction
+这个文件夹下主要存放python把PDF的文件转为world或者excel代码。代码运行之后，只需要修改对应的路径即可。
