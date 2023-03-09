@@ -1,4 +1,4 @@
-# 这里使用Pandas进行实现
+# 这里使用Pandas库进行实现
 import pandas as pd
 
 df = pd.read_excel('res.xlsx')
