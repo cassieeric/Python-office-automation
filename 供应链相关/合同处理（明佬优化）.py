@@ -13,8 +13,6 @@ df
 
 
 # In[2]:
-
-
 from glob import glob
 
 from win32com import client as win32
