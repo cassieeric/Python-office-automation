@@ -21,7 +21,7 @@ src_dir = "."
 os.makedirs("result", exist_ok=True)
 tpl_file_path1 = "合格验收证书模板.docx"
 tpl_file_path2 = "到货证明模板.docx"
-df = pd.read_excel(f"{src_dir}/小站订单20230323.xlsx", sheet_name='佳贤', usecols="A:H")
+df = pd.read_excel(f"{src_dir}/小站订单20230330.xlsx", sheet_name='佳贤', usecols="A:H")
 df = df.dropna(subset="订单编号").ffill().set_index("序号")
 df.tail()
 
@@ -136,7 +136,7 @@ def get_text(wdf):
 # In[4]:
 
 
-for i, s in df.loc[251:258].iterrows():
+for i, s in df.loc[261:262].iterrows():
     tpl = DocxTemplate("合格验收证书模板.docx")
     code = s["订单编号"]
     supplier, addr, wdf = word_data[code]
