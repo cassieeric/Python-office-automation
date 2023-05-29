@@ -18,7 +18,7 @@ import re
 
 
 src_dir = "."
-supplier = "深圳市佳贤通信科技股份有限公司"
+supplier = "xxx公司"
 df = pd.read_excel("小站订单20230315.xlsx", sheet_name='佳贤')
 
 
