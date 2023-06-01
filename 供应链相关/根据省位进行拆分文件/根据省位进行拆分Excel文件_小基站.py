@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_excel("小站订单20230331（销售订单和采购订单对应）.xlsx", sheet_name="Sheet2", usecols="A:D")
+df = pd.read_excel("20230331.xlsx", sheet_name="Sheet2", usecols="A:D")
 provinces = df["省分"].drop_duplicates()
 # print(len(provinces))
 # print(provinces)
@@ -15,10 +15,10 @@ for province in provinces:
     else:
         print(f"正在导出{province}的数据...")
         target_data = df[df['省分'] == province]
-        new_cols = ['到货证明', '初验', '终验']
+        new_cols = ['证明1', '证明2', '证明3']
         # target_data = target_data.reindex(columns=[*target_data.columns.tolist(), *new_cols])
         target_data[new_cols] = None
         target_data.drop("省分", axis=1, inplace=True)
-        target_data.sort_values(by="销售订单合同编号", inplace=True, ascending=True)
+        target_data.sort_values(by="合同编号", inplace=True, ascending=True)
         target_data.to_excel(f"./excel_res/{province}.xlsx", index=False)
         print(f"{province}的数据已经导出完成")
