@@ -82,19 +82,19 @@ word.Quit()
 
 def get_num(wdf):
     nums = []
-    for name, num, unit in zip(wdf["货物名称（物料名称）"], wdf["采购数量"], wdf["计量单位"]):
+    for name, num, unit in zip(wdf["货物名称"], wdf["采购数量"], wdf["计量单位"]):
         # t = None  # 如果设置成这个，整数存在空值就会成为浮点数，生成的到货中的件数是浮点数
         t = pd.NA  # 如果设置成这个，nullable类型的整数允许存在空值，生成的到货中的件数是整数
-        if "安装套件" in name:
-            # t = "随主设备包装"
+        if "套件" in name:
+            # t = "随设备包装"
             t = ""
-        elif re.search("(BBU交转直流电)", name):
+        elif re.search("(交转直流电)", name):
             t = num
-        elif "射频单元" in name:
+        elif "单元" in name:
             t = math.ceil(num/5)
         elif "GPS" in name:
             t = math.ceil(num/6)
-        elif re.search("(尾纤|接地线|交流电源线)", name):
+        elif re.search("(电源线)", name):
             t = math.ceil(num/100)
         elif "光模块" in name:
             t = math.ceil(num/(120 if unit == "个" else 240))
@@ -107,7 +107,7 @@ def get_num(wdf):
 
 def get_text(wdf):
     text = ""
-    flag = wdf["货物编码（物料编码）"].isin(["J01140300001", "J01140300003"]).any()
+    flag = wdf["货物编码"].isin(["J01140300001", "J01140300003"]).any()
     if flag:
         text += "本订单中"
     if "0001" in wdf["货物编码"].values:
