@@ -19,9 +19,9 @@ import os
 
 src_dir = "."
 os.makedirs("result", exist_ok=True)
-tpl_file_path1 = "合格验收证书模板.docx"
-tpl_file_path2 = "到货证明模板.docx"
-df = pd.read_excel(f"{src_dir}/小站订单20230330.xlsx", sheet_name='佳贤', usecols="A:H")
+tpl_file_path1 = "证书模板.docx"
+tpl_file_path2 = "证明模板.docx"
+df = pd.read_excel(f"{src_dir}/xxx.xlsx", sheet_name='xxx', usecols="A:H")
 df = df.dropna(subset="订单编号").ffill().set_index("序号")
 df.tail()
 
@@ -33,7 +33,7 @@ word = win32.Dispatch("Word.Application")
 word.Visible = True
 word.ScreenUpdating = False
 word_data = {}
-files = glob(f"{src_dir}/物资合同/物资合同*.doc*")
+files = glob(f"{src_dir}/物资合同*.doc*")
 print("加载word数据")
 first = None
 for file in files:
@@ -57,7 +57,7 @@ for file in files:
                     addr += "\n"+row[2]
                 elif row[2].startswith("电话"):
                     addr += "\n"+row[2]
-                elif row[1].startswith("发货通知单编号"):
+                elif row[1].startswith("编号"):
                     code = row[1].split("：")[1]
         else:
             if row[0] == "货物费合计金额：":
@@ -80,20 +80,6 @@ first.Close()
 word.Quit()
 
 
-# In[3]:
-'''
-佳贤大概是这样算的：
-包装类型好像都是：纸箱
-件数：基带单元/扩展单元 都是1套1箱，射频单元是5套1箱
-安装套件件数写：随主设备包装
-GPS 件数6套1箱，
-线材都是100根一箱
-光模块，120对或者240个一箱
-功分器是10个一箱
-'''
-
-
-
 def get_num(wdf):
     nums = []
     for name, num, unit in zip(wdf["货物名称（物料名称）"], wdf["采购数量"], wdf["计量单位"]):
@@ -102,7 +88,7 @@ def get_num(wdf):
         if "安装套件" in name:
             # t = "随主设备包装"
             t = ""
-        elif re.search("(基带单元|扩展单元|BBU交转直流电)", name):
+        elif re.search("(BBU交转直流电)", name):
             t = num
         elif "射频单元" in name:
             t = math.ceil(num/5)
@@ -124,12 +110,12 @@ def get_text(wdf):
     flag = wdf["货物编码（物料编码）"].isin(["J01140300001", "J01140300003"]).any()
     if flag:
         text += "本订单中"
-    if "J01140300001" in wdf["货物编码（物料编码）"].values:
-        text += "5G小基站-自研EXT型-基带单元-2×100M-2TR-TDD J01140300001，需要供应商（乙方）装配NR基带加速卡升级成5G小基站-自研EXT型-基带单元-4×100M-2TR-TDD J01140300002，"
-    if "J01140300003" in wdf["货物编码（物料编码）"].values:
-        text += "5G小基站-自研EXT型-基带单元-2×100M+2×20M-2TR J01140300003，需要供应商（乙方）装配NR基带加速卡升级成5G小基站-自研EXT型-基带单元-4×100M+2×20M-2TR J01140300004，"
+    if "0001" in wdf["货物编码"].values:
+        text += "xxx"
+    if "0003" in wdf["货物编码"].values:
+        text += "xxx"
     if flag:
-        text += "NR基带单元加速卡配送发货。"
+        text += "xxxxxx"
     return text
 
 
@@ -137,27 +123,27 @@ def get_text(wdf):
 
 
 for i, s in df.loc[261:262].iterrows():
-    tpl = DocxTemplate("合格验收证书模板.docx")
-    code = s["订单编号"]
+    tpl = DocxTemplate("证书模板.docx")
+    code = s["编号"]
     supplier, addr, wdf = word_data[code]
     context = {"supplier": supplier}
-    context["num"] = s["合同编号"]
+    context["num"] = s["编号"]
     context["code"] = code
 #     print(s.to_dict())
     wdf = wdf.iloc[:, [2, 1, 3, 5, 7, 4]].copy()
     wdf.原厂商规格型号 = wdf.原厂商规格型号.replace("-", "/")
-    t1 = "装配NR基带加速卡升级成5G小基站-自研EXT型-基带单元-4×100M-2TR-TDD J01140300002"
-    t2 = "装配NR基带加速卡升级成5G小基站-自研EXT型-基带单元-4×100M+2×20M-2TR J01140300004"
-    wdf.备注 = wdf["货物编码（物料编码）"].map(
-        {"J01140300001": t1, "J01140300003": t2}).fillna("")
+    t1 = "0002"
+    t2 = "0004"
+    wdf.备注 = wdf["物料编码"].map(
+        {"0001": t1, "0003": t2}).fillna("")
     context["data"] = wdf.values.tolist()
     context["m"] = wdf.采购数量.sum()
     tpl.render(context, autoescape=True)
-    save_name = f"result/{s['城市']}-{code}合格验收证书.docx"
+    save_name = f"result/{s['城市']}-{code}证书.docx"
     tpl.save(save_name)
     print("保存到", save_name)
 
-    tpl = DocxTemplate("到货证明模板.docx")
+    tpl = DocxTemplate("证明模板.docx")
     supplier, addr, wdf = word_data[code]
     context["addr"] = addr
     wdf = wdf.iloc[:, [0, 2, 1, 3, 7, 5]].copy()
@@ -173,10 +159,3 @@ for i, s in df.loc[261:262].iterrows():
     tpl.save(save_name)
     print("保存到", save_name)
     print()
-
-
-# In[ ]:
-
-
-
-
