@@ -8,8 +8,8 @@ import os
 import pandas as pd
 
 src_dir = "."
-supplier = "深圳市佳贤通信设备有限公司"
-df = pd.read_excel("小站订单20230314.xlsx", sheet_name='佳贤')
+supplier = "xxx"
+df = pd.read_excel("xxx.xlsx", sheet_name='佳贤')
 
 word = win32.Dispatch("Word.Application")
 word.Visible = True
@@ -29,10 +29,10 @@ for file in files:
         if header is None:
             if row[0] == "序号":
                 header = row
-            elif len(row) > 2 and row[1].startswith("发货通知单编号"):
+            elif len(row) > 2 and row[1].startswith("编号"):
                 code = row[1].split("：")[1]
         else:
-            if row[0] == "货物费合计金额：":
+            if row[0] == "合计金额：":
                 break
             data.append(row)
     data = pd.DataFrame(data, columns=header)
@@ -58,7 +58,7 @@ import re
 
 # for i, s in df.iterrows():
 # for i, s in df.iloc[218:].iterrows():
-for i, s in df.iloc[217:218].iterrows():  # 这个序号要比表格中的index要少2，比方说江苏南通5的index是219，那么这里应该写为217:218
+for i, s in df.iloc[217:218].iterrows():  # 这个序号要比表格中的index要少2，比方说index是219，那么这里应该写为217:218
     print("正在处理：", s.values[2])
     code = s["订单编号"]
     c2 = s["销售订单编号"]
@@ -67,12 +67,12 @@ for i, s in df.iloc[217:218].iterrows():  # 这个序号要比表格中的index�
     if wdf is None:
         print(code, "对应合同编号的Word文档未找到")
         continue
-    wb = load_workbook("佳贤物资出库申请单模板.xlsx")
+    wb = load_workbook("xxx模板.xlsx")
     sht = wb.active
-    sht["B3"].value = s["销售订单编号"]
-    # sht["E3"].value = str(s["销售订单设备总价（不含税）"])+"元"
-    # sht["E3"].value = str(float(s["销售订单设备总价（不含税）"])) + "元"
-    sht["E3"].value = f"{s['销售订单设备总价（不含税）']:.2f}元"
+    sht["B3"].value = s["订单编号"]
+    # sht["E3"].value = str(s["设备总价（不含税）"])+"元"
+    # sht["E3"].value = str(float(s["设备总价（不含税）"])) + "元"
+    sht["E3"].value = f"{s['设备总价（不含税）']:.2f}元"
     sht["A8"].value = code
     sht["E8"].value = s["合同金额（不含税）"]
     sht["E10"].value = s["合同金额（不含税）"]
@@ -100,8 +100,8 @@ for i, s in df.iloc[217:218].iterrows():  # 这个序号要比表格中的index�
     sht[f"E{n+12}"].value = f"=sum(E12:E{n+11})"
     # sht[f"F{n+12}"].value = f"=sum(F12:F{n+11})"
     sht[f"F{n+12}"].value = f"=sum(F12:F{n+11})"
-    text = wdf["货物名称（物料名称）"].str.replace(
-        "5G小基站-(?:自研EXT型-)?|-?\d.*", "", regex=True)
+    text = wdf["物料名称"].str.replace(
+        "xxx-(?:xxx-)?|-?\d.*", "", regex=True)
     text = (wdf.采购数量.astype(str)+wdf.计量单位+text).str.cat(sep="、")
     nt = "零一二三四五六七八九十"
     addr, nums = re.split("(?=\d)", city, maxsplit=1)
@@ -109,10 +109,10 @@ for i, s in df.iloc[217:218].iterrows():  # 这个序号要比表格中的index�
     for num in nums:
         t.append(nt[int(num)])
     num = "".join(t)
-    text = f"领用后，部件组装后对应{text}。上电、调试，测试合格后，按照合同号：{c2}发货到{addr}第{num}批。"
+    text = f"{text}"
     sht["B6"].value = text
-    wb.save(f"物资出库申请-{code}.xlsx")
-    print("保存到", f"物资出库申请-{code}.xlsx")
+    wb.save(f"xxx-{code}.xlsx")
+    print("保存到", f"xxx-{code}.xlsx")
 
 
 # In[5]:
@@ -123,7 +123,7 @@ xlApp.Visible = True
 xlApp.ScreenUpdating = False
 xlApp.DisplayAlerts = False
 
-files = glob(f"{src_dir}/物资出库申请-*.xlsx")
+files = glob(f"{src_dir}/xxx-*.xlsx")
 print("加载excel结果数据")
 first = None
 try:
