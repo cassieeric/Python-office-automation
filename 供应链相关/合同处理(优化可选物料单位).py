@@ -11,7 +11,7 @@ from win32com import client as win32
 import os
 
 src_dir = "."
-supplier = "深圳市通信设备有限公司"
+supplier = "xxx"
 df = pd.read_excel(f"{src_dir}/原始数据.xlsx")
 
 
