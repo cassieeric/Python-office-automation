@@ -105,7 +105,7 @@ for i, s in df.iloc[0:].iterrows():
     t.unit = t.unit.map({"m": "米", "m2": "平方"})
     t.fillna("", inplace=True)
     text = wdf["货物名称（物料名称）"].str.replace(
-        "5G小基站-(?:自研EXT型-)?|-?\d.*", "", regex=True)
+        "xxx?|-?\d.*", "", regex=True)
     text = (wdf.采购数量.astype(str)+wdf.计量单位+t.num+t.unit+text).str.cat(sep="、")
     nt = "零一二三四五六七八九十"
     addr, nums = re.split("(?=\d)", city, maxsplit=1)
@@ -113,10 +113,10 @@ for i, s in df.iloc[0:].iterrows():
     for num in nums:
         t.append(nt[int(num)])
     num = "".join(t)
-    text = f"领用后，部件组装后对应{text}。上电、调试，测试合格后，按照合同号：{c2}发货到{addr}第{num}批。"
+    text = f"{text}"
     sht["B6"].value = text
-    wb.save(f"物资出库申请-{code}.xlsx")
-    print("保存到", f"物资出库申请-{code}.xlsx")
+    wb.save(f"xxx-{code}.xlsx")
+    print("保存到", f"xxx-{code}.xlsx")
 
 
 # In[4]:
