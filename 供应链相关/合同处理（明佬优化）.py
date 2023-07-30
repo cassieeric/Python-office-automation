@@ -36,10 +36,10 @@ for file in files:
         if header is None:
             if row[0] == "序号":
                 header = row
-            elif len(row) > 2 and row[1].startswith("发货通知单编号"):
+            elif len(row) > 2 and row[1].startswith("xxx编号"):
                 code = row[1].split("：")[1]
         else:
-            if row[0] == "货物费合计金额：":
+            if row[0] == "合计金额：":
                 break
             data.append(row)
     data = pd.DataFrame(data, columns=header)
@@ -68,20 +68,20 @@ import re
 
 for i, s in df.iloc[0:].iterrows():
     print(s.values)
-    code = s["采购合同编号"]
-    c2 = s["销售合同/备货函编号"]
+    code = s["编号"]
+    c2 = s["编号"]
     city = s["订单城市"]
     wdf = word_data.get(code)
     if wdf is None:
         print(code, "对应合同编号的Word文档未找到")
         continue
-    wb = load_workbook("物质出库申请单模板.xlsx")
+    wb = load_workbook("模板.xlsx")
     sht = wb.active
-    sht["B3"].value = s["销售合同/备货函编号"]
-    sht["E3"].value = f"{s['销售合同/备货函说明金额（不含税）']:.2f}元"
+    sht["B3"].value = s["编号"]
+    sht["E3"].value = f"{s['金额（不含税）']:.2f}元"
     sht["A8"].value = code
-    sht["E8"].value = s["采购合同金额（不含税，元）"]
-    sht["E10"].value = s["采购合同金额（不含税，元）"]
+    sht["E8"].value = s["合同金额（不含税，元）"]
+    sht["E10"].value = s["合同金额（不含税，元）"]
 
     height = sht.row_dimensions[12].height
     styles = []
@@ -107,8 +107,8 @@ for i, s in df.iloc[0:].iterrows():
             cell.alignment = styles[j]["alignment"]
     sht[f"E{n+12}"].value = f"=sum(E12:E{n+11})"
     sht[f"F{n+12}"].value = f"=sum(F12:F{n+11})"
-    text = wdf["货物名称（物料名称）"].str.replace(
-        "5G小基站-(?:自研EXT型-)?|-?\d.*", "", regex=True)
+    text = wdf["物料"].str.replace(
+        "-(?:-)?|-?\d.*", "", regex=True)
     text = (wdf.采购数量.astype(str)+wdf.计量单位+text).str.cat(sep="、")
     nt = "零一二三四五六七八九十"
     addr, nums = re.split("(?=\d)", city, maxsplit=1)
@@ -116,10 +116,10 @@ for i, s in df.iloc[0:].iterrows():
     for num in nums:
         t.append(nt[int(num)])
     num = "".join(t)
-    text = f"领用后，部件组装后对应{text}。上电、调试，测试合格后，按照合同号：{c2}发货到{addr}第{num}批。"
+    text = f"{text}"
     sht["B6"].value = text
-    wb.save(f"物资出库申请-{code}.xlsx")
-    print("保存到", f"物资出库申请-{code}.xlsx")
+    wb.save(f"xxx-{code}.xlsx")
+    print("保存到", f"xxx-{code}.xlsx")
 
 
 # In[4]:
@@ -130,7 +130,7 @@ xlApp.Visible = True
 xlApp.ScreenUpdating = False
 xlApp.DisplayAlerts = False
 
-files = glob(f"{src_dir}/物资出库申请-*.xlsx")
+files = glob(f"{src_dir}/xxx-*.xlsx")
 print("加载excel结果数据")
 first = None
 try:
@@ -148,7 +148,3 @@ finally:
 
 
 # In[ ]:
-
-
-
-
