@@ -7,7 +7,7 @@
 import pandas as pd
 
 src_dir = "."
-supplier = "深圳市通信设备有限公司"
+supplier = "xxx"
 df = pd.read_excel("原始数据.xlsx")
 df
 
